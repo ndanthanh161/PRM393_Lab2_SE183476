@@ -48,24 +48,24 @@ class _NavigationShellState extends State<NavigationShell> {
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
         destinations: [
           const NavigationDestination(
-            icon: Icon(Icons.search_outlined),
-            selectedIcon: Icon(Icons.search_rounded),
+            icon: Icon(Icons.explore_outlined),
+            selectedIcon: Icon(Icons.explore_rounded),
             label: 'Explore',
           ),
           NavigationDestination(
             icon: Badge(
               isLabelVisible: hasResults && _currentIndex != 1,
-              child: const Icon(Icons.dataset_outlined),
+              child: const Icon(Icons.space_dashboard_outlined),
             ),
-            selectedIcon: const Icon(Icons.dataset_rounded),
+            selectedIcon: const Icon(Icons.space_dashboard_rounded),
             label: 'Summary',
           ),
           NavigationDestination(
             icon: Badge(
               isLabelVisible: hasResults && _currentIndex != 2,
-              child: const Icon(Icons.query_stats_outlined),
+              child: const Icon(Icons.insights_outlined),
             ),
-            selectedIcon: const Icon(Icons.query_stats_rounded),
+            selectedIcon: const Icon(Icons.insights_rounded),
             label: 'Analytics',
           ),
         ],

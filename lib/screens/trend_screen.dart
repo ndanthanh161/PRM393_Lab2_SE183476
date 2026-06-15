@@ -16,7 +16,7 @@ class TrendScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Data Analytics'),
+        title: const Text('Analytics'),
         actions: const [
           ThemeToggleButton(),
           SizedBox(width: 8),
@@ -36,28 +36,30 @@ class TrendScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.insights_rounded,
-                color: colorScheme.onSurfaceVariant.withOpacity(0.6), size: 48),
+            Icon(Icons.bar_chart_rounded,
+                color: colorScheme.primary.withOpacity(0.3), size: 56),
             const SizedBox(height: 16),
             Text(
-              'No Analytics Available',
+              'No analytics yet',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.w700,
                 color: colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
-              'Search for a topic to view publication trends.',
+              'Search for a topic to see trends and charts.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13),
+              style: TextStyle(
+                color: colorScheme.onSurface.withOpacity(0.5),
+                fontSize: 13,
+              ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
+            const SizedBox(height: 20),
+            ElevatedButton(
               onPressed: onNavigateToSearch,
-              icon: const Icon(Icons.search_rounded, size: 16),
-              label: const Text('Explore'),
+              child: const Text('Start exploring'),
             ),
           ],
         ),
@@ -67,7 +69,6 @@ class TrendScreen extends StatelessWidget {
 
   Widget _buildTrends(BuildContext context, AnalyzerProvider provider) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -81,8 +82,7 @@ class TrendScreen extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: colorScheme.secondary.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: colorScheme.secondary.withOpacity(0.2)),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
@@ -95,10 +95,10 @@ class TrendScreen extends StatelessWidget {
                           AlwaysStoppedAnimation<Color>(colorScheme.secondary),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Updating trends (loaded ${provider.allWorks.length} / ${provider.totalCount} papers)...',
+                      'Loading more data (${provider.allWorks.length} / ${provider.totalCount})...',
                       style: TextStyle(
                         fontSize: 12,
                         color: colorScheme.secondary,
@@ -110,67 +110,80 @@ class TrendScreen extends StatelessWidget {
               ),
             ),
           ],
-          _AnalyticsKpiRow(provider: provider),
-          const SizedBox(height: 24),
-          const _SectionTitle(
-            title: 'Publication Output Over Time',
-            subtitle: 'Annual volume of matching research records',
+          _KpiRow(provider: provider),
+          const SizedBox(height: 28),
+          Text(
+            'Publications over time',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
+          Text(
+            'Annual volume of matching records',
+            style: TextStyle(
+              fontSize: 12,
+              color: colorScheme.onSurface.withOpacity(0.45),
+            ),
+          ),
+          const SizedBox(height: 14),
           _buildChart(context, provider),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Annual Publications Count',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
-          const _SectionTitle(
-            title: 'Top Journals',
-            subtitle: 'Publication count by source title',
+          Text(
+            'Top journals',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
+          Text(
+            'Publication count by source',
+            style: TextStyle(
+              fontSize: 12,
+              color: colorScheme.onSurface.withOpacity(0.45),
+            ),
+          ),
+          const SizedBox(height: 14),
           _buildRankingCard(
             context: context,
             entries: provider.topJournals
                 .where((e) => e.key != 'Unknown Source')
                 .take(5)
                 .toList(),
-            emptyMessage: 'Insufficient journal data.',
+            emptyMessage: 'Not enough journal data.',
             barColor: colorScheme.secondary,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
-          const _SectionTitle(
-            title: 'Featured Authors',
-            subtitle: 'Most frequent authors in the loaded dataset',
+          Text(
+            'Featured authors',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
+          Text(
+            'Most frequent contributors',
+            style: TextStyle(
+              fontSize: 12,
+              color: colorScheme.onSurface.withOpacity(0.45),
+            ),
+          ),
+          const SizedBox(height: 14),
           _buildRankingCard(
             context: context,
             entries: provider.topAuthors
                 .where((e) => e.key != 'Unknown Author')
                 .take(5)
                 .toList(),
-            emptyMessage: 'Insufficient author data.',
+            emptyMessage: 'Not enough author data.',
             barColor: colorScheme.primary,
           ),
           const SizedBox(height: 16),
@@ -181,7 +194,6 @@ class TrendScreen extends StatelessWidget {
 
   Widget _buildChart(BuildContext context, AnalyzerProvider provider) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final trends = provider.yearlyTrends;
     final spots = <FlSpot>[];
 
@@ -215,8 +227,14 @@ class TrendScreen extends StatelessWidget {
       padding: const EdgeInsets.only(right: 20, left: 6, top: 16, bottom: 6),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.3 : 0.15)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: LineChart(
         LineChartData(
@@ -227,11 +245,7 @@ class TrendScreen extends StatelessWidget {
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
               getTooltipColor: (touchedSpot) => colorScheme.surfaceContainerHighest,
-              tooltipBorderRadius: BorderRadius.circular(8),
-              tooltipBorder: BorderSide(
-                color: colorScheme.outline.withOpacity(0.2),
-                width: 1,
-              ),
+              tooltipBorderRadius: BorderRadius.circular(10),
               getTooltipItems: (touchedSpots) {
                 return touchedSpots.map((LineBarSpot touchedSpot) {
                   return LineTooltipItem(
@@ -239,7 +253,7 @@ class TrendScreen extends StatelessWidget {
                     TextStyle(
                       color: colorScheme.onSurface,
                       fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   );
                 }).toList();
@@ -251,7 +265,7 @@ class TrendScreen extends StatelessWidget {
             drawVerticalLine: false,
             horizontalInterval: yInterval,
             getDrawingHorizontalLine: (value) => FlLine(
-              color: colorScheme.outline.withOpacity(0.12),
+              color: colorScheme.outline.withOpacity(0.10),
               strokeWidth: 1,
             ),
           ),
@@ -270,7 +284,7 @@ class TrendScreen extends StatelessWidget {
                   return Text(
                     value.toInt().toString(),
                     style: TextStyle(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                      color: colorScheme.onSurface.withOpacity(0.4),
                       fontSize: 10,
                     ),
                   );
@@ -290,7 +304,7 @@ class TrendScreen extends StatelessWidget {
                   return Text(
                     year.toString(),
                     style: TextStyle(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                      color: colorScheme.onSurface.withOpacity(0.4),
                       fontSize: 10,
                     ),
                   );
@@ -305,7 +319,7 @@ class TrendScreen extends StatelessWidget {
               isCurved: true,
               curveSmoothness: 0.3,
               color: colorScheme.primary,
-              barWidth: 2.8,
+              barWidth: 2.5,
               isStrokeCapRound: true,
               dotData: FlDotData(
                 show: spots.length <= 15,
@@ -321,7 +335,7 @@ class TrendScreen extends StatelessWidget {
                 show: true,
                 gradient: LinearGradient(
                   colors: [
-                    colorScheme.primary.withOpacity(0.12),
+                    colorScheme.primary.withOpacity(0.15),
                     colorScheme.primary.withOpacity(0.0),
                   ],
                   begin: Alignment.topCenter,
@@ -342,19 +356,27 @@ class TrendScreen extends StatelessWidget {
     required Color barColor,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (entries.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18)),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Text(
           emptyMessage,
-          style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13),
+          style: TextStyle(
+            color: colorScheme.onSurface.withOpacity(0.5),
+            fontSize: 13,
+          ),
         ),
       );
     }
@@ -362,11 +384,17 @@ class TrendScreen extends StatelessWidget {
     final maxVal = entries.first.value;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: entries.asMap().entries.map((indexed) {
@@ -382,18 +410,6 @@ class TrendScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    SizedBox(
-                      width: 20,
-                      child: Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: index == 0 ? barColor : colorScheme.onSurfaceVariant.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         entry.key,
@@ -408,9 +424,9 @@ class TrendScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '${entry.value} papers',
+                      '${entry.value}',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: barColor,
                       ),
@@ -423,8 +439,8 @@ class TrendScreen extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progress,
                     backgroundColor: colorScheme.surfaceContainerHighest.withOpacity(0.4),
-                    valueColor: AlwaysStoppedAnimation<Color>(barColor),
-                    minHeight: 6,
+                    valueColor: AlwaysStoppedAnimation<Color>(barColor.withOpacity(0.6)),
+                    minHeight: 4,
                   ),
                 ),
               ],
@@ -436,10 +452,10 @@ class TrendScreen extends StatelessWidget {
   }
 }
 
-class _AnalyticsKpiRow extends StatelessWidget {
+class _KpiRow extends StatelessWidget {
   final AnalyzerProvider provider;
 
-  const _AnalyticsKpiRow({required this.provider});
+  const _KpiRow({required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -449,34 +465,31 @@ class _AnalyticsKpiRow extends StatelessWidget {
         ? 'N/A'
         : years.length == 1
             ? years.first.toString()
-            : '${years.first}-${years.last}';
+            : '${years.first}–${years.last}';
 
     return Row(
       children: [
         Expanded(
-          child: _AnalyticsKpiCard(
+          child: _KpiCard(
             label: 'Records',
             value: provider.allWorks.length.toString(),
             color: colorScheme.primary,
-            icon: Icons.dataset_outlined,
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
-          child: _AnalyticsKpiCard(
+          child: _KpiCard(
             label: 'Year span',
             value: yearRange,
             color: colorScheme.tertiary,
-            icon: Icons.timeline_rounded,
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
-          child: _AnalyticsKpiCard(
+          child: _KpiCard(
             label: 'Sources',
             value: provider.topJournals.length.toString(),
             color: colorScheme.secondary,
-            icon: Icons.menu_book_outlined,
           ),
         ),
       ],
@@ -484,44 +497,46 @@ class _AnalyticsKpiRow extends StatelessWidget {
   }
 }
 
-class _AnalyticsKpiCard extends StatelessWidget {
+class _KpiCard extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
-  final IconData icon;
 
-  const _AnalyticsKpiCard({
+  const _KpiCard({
     required this.label,
     required this.value,
     required this.color,
-    required this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      height: 90,
+      height: 80,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Icon(icon, color: color, size: 20),
-          const Spacer(),
           Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: colorScheme.onSurface,
-              fontSize: 17,
+              color: color,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
               height: 1,
             ),
@@ -532,63 +547,13 @@ class _AnalyticsKpiCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: colorScheme.onSurfaceVariant,
+              color: colorScheme.onSurface.withOpacity(0.45),
               fontSize: 11,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _SectionTitle({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 4,
-              height: 16,
-              decoration: BoxDecoration(
-                color: colorScheme.primary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-                color: colorScheme.onSurface,
-                letterSpacing: 0.25,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 12,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

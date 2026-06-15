@@ -39,30 +39,10 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<AnalyzerProvider>();
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: colorScheme.primary.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
-              ),
-              child: Icon(
-                Icons.science_outlined,
-                color: colorScheme.primary,
-                size: 16,
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Text('Research Explorer'),
-          ],
-        ),
+        title: const Text('Research Explorer'),
         actions: const [
           ThemeToggleButton(),
           SizedBox(width: 8),
@@ -71,85 +51,59 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: colorScheme.surface,
+          Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Research Query',
+                  'What are you researching?',
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface.withOpacity(0.7),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: colorScheme.shadow.withOpacity(isDark ? 0.15 : 0.06),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          prefixIcon:
+                              const Icon(Icons.search_rounded, size: 20),
+                          hintText: 'Topics, methods, or domains...',
+                          suffixIcon: _searchController.text.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.close_rounded, size: 18),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() {});
+                                  },
+                                )
+                              : null,
                         ),
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.manage_search_rounded, size: 20),
-                            hintText: 'Search topics, methods, or domains...',
-                            suffixIcon: _searchController.text.isNotEmpty
-                                ? IconButton(
-                                    icon: const Icon(Icons.close_rounded, size: 18),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      setState(() {});
-                                    },
-                                  )
-                                : null,
-                          ),
-                          onChanged: (val) => setState(() {}),
-                          onSubmitted: _triggerSearch,
-                          style: TextStyle(
-                            color: colorScheme.onSurface,
-                            fontSize: 14,
-                          ),
+                        onChanged: (val) => setState(() {}),
+                        onSubmitted: _triggerSearch,
+                        style: TextStyle(
+                          color: colorScheme.onSurface,
+                          fontSize: 14,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: colorScheme.shadow.withOpacity(isDark ? 0.15 : 0.06),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () => _triggerSearch(_searchController.text),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(14),
+                        minimumSize: const Size(50, 50),
                       ),
-                      child: ElevatedButton(
-                        onPressed: () => _triggerSearch(_searchController.text),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(12),
-                          minimumSize: const Size(48, 48),
-                        ),
-                        child: const Icon(
-                          Icons.search_rounded,
-                          size: 20,
-                        ),
-                      ),
+                      child: const Icon(Icons.arrow_forward_rounded, size: 20),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 SizedBox(
                   height: 36,
                   child: ListView.separated(
@@ -161,40 +115,30 @@ class _SearchScreenState extends State<SearchScreen> {
                       final suggestion = _suggestions[index];
                       final isSelected = provider.currentQuery == suggestion;
 
-                      return ActionChip(
-                        onPressed: () {
+                      return GestureDetector(
+                        onTap: () {
                           _searchController.text = suggestion;
                           _triggerSearch(suggestion);
                         },
-                        avatar: isSelected
-                            ? Icon(Icons.check_circle_rounded,
-                                size: 16,
-                                color: colorScheme.onSecondaryContainer)
-                            : Icon(Icons.search_rounded,
-                                size: 16,
-                                color: colorScheme.onSurfaceVariant),
-                        label: Text(suggestion),
-                        labelStyle: TextStyle(
-                          fontSize: 12,
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected
-                              ? colorScheme.onSecondaryContainer
-                              : colorScheme.onSurface,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? colorScheme.primary.withOpacity(0.12)
+                                : colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            suggestion,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                              color: isSelected
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withOpacity(0.7),
+                            ),
+                          ),
                         ),
-                        backgroundColor: isSelected
-                            ? colorScheme.secondaryContainer
-                            : colorScheme.surfaceContainerHighest.withOpacity(0.4),
-                        side: BorderSide(
-                          color: isSelected
-                              ? colorScheme.secondary
-                              : colorScheme.outline.withOpacity(0.2),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                       );
                     },
                   ),
@@ -210,7 +154,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildBody(AnalyzerProvider provider) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (provider.isLoading) {
       return _buildSkeletonList();
@@ -220,44 +163,36 @@ class _SearchScreenState extends State<SearchScreen> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorScheme.error.withOpacity(0.3)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.error_outline_rounded,
-                    color: colorScheme.error, size: 36),
-                const SizedBox(height: 12),
-                Text(
-                  'Failed to load data',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.onSurface,
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.cloud_off_rounded,
+                  color: colorScheme.error, size: 40),
+              const SizedBox(height: 14),
+              Text(
+                'Something went wrong',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  provider.error!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: colorScheme.onSurfaceVariant,
-                    fontSize: 13,
-                  ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                provider.error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: colorScheme.onSurface.withOpacity(0.6),
+                  fontSize: 13,
                 ),
-                const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  onPressed: () => _triggerSearch(provider.currentQuery),
-                  icon: const Icon(Icons.refresh_rounded, size: 16),
-                  label: const Text('Retry'),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 18),
+              OutlinedButton.icon(
+                onPressed: () => _triggerSearch(provider.currentQuery),
+                icon: const Icon(Icons.refresh_rounded, size: 16),
+                label: const Text('Try again'),
+              ),
+            ],
           ),
         ),
       );
@@ -273,26 +208,16 @@ class _SearchScreenState extends State<SearchScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary.withOpacity(0.08),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      provider.currentQuery.isEmpty
-                          ? Icons.science_outlined
-                          : Icons.search_off_rounded,
-                      color: colorScheme.primary,
-                      size: 44,
-                    ),
-                  ),
+                Icon(
+                  provider.currentQuery.isEmpty
+                      ? Icons.auto_stories_rounded
+                      : Icons.search_off_rounded,
+                  color: colorScheme.primary.withOpacity(0.4),
+                  size: 56,
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  provider.currentQuery.isEmpty ? 'Explore Research' : 'No Results Found',
+                  provider.currentQuery.isEmpty ? 'Explore Research' : 'No Results',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -302,11 +227,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 8),
                 Text(
                   provider.currentQuery.isEmpty
-                      ? 'Enter a topic to discover publications, journals, citation metrics, and yearly trends.'
-                      : 'We couldn\'t find any matching publications for "${provider.currentQuery}". Try using different terms.',
+                      ? 'Enter a topic to discover publications, citation metrics, and trends.'
+                      : 'No publications found for "${provider.currentQuery}". Try different terms.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withOpacity(0.5),
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -332,114 +257,33 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             physics: const BouncingScrollPhysics(),
             itemCount: provider.works.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final work = provider.works[index];
-              return Card(
-                elevation: 0,
-                color: colorScheme.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.2),
-                    width: 1,
-                  ),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 280),
-                        pageBuilder: (_, _, _) => DetailScreen(work: work),
-                        transitionsBuilder: (_, anim, _, child) =>
-                            FadeTransition(opacity: anim, child: child),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          work.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: colorScheme.onSurface,
-                            height: 1.4,
-                          ),
-                        ),
-                        if (work.authors.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Text(
-                            work.authors.take(3).join(', ') +
-                                (work.authors.length > 3
-                                    ? ' +${work.authors.length - 3}'
-                                    : ''),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: colorScheme.onSurfaceVariant,
-                              fontSize: 12,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            MetricTag(
-                              text: work.publicationYear.toString(),
-                              color: colorScheme.secondary,
-                            ),
-                            const SizedBox(width: 6),
-                            MetricTag(
-                              text: '${work.citedByCount} citations',
-                              color: colorScheme.primary,
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                work.journalName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: colorScheme.onSurfaceVariant.withOpacity(0.8),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              color: colorScheme.onSurfaceVariant.withOpacity(0.8),
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                      ],
+              return _ResultCard(
+                title: work.title,
+                authors: work.authors,
+                year: work.publicationYear,
+                citations: work.citedByCount,
+                journal: work.journalName,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      transitionDuration: const Duration(milliseconds: 280),
+                      pageBuilder: (_, _, _) => DetailScreen(work: work),
+                      transitionsBuilder: (_, anim, _, child) =>
+                          FadeTransition(opacity: anim, child: child),
                     ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           ),
         ),
         if (provider.totalPages > 1)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              border: Border(
-                top: BorderSide(color: colorScheme.outline.withOpacity(0.2), width: 1),
-              ),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -450,21 +294,12 @@ class _SearchScreenState extends State<SearchScreen> {
                       ? () => provider.previousPage()
                       : null,
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
-                  ),
-                  child: Text(
-                    'Page ${provider.currentPage} of ${provider.totalPages}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: colorScheme.onSurface,
-                    ),
+                Text(
+                  '${provider.currentPage} / ${provider.totalPages}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
                 _PageButton(
@@ -488,37 +323,138 @@ class _SearchScreenState extends State<SearchScreen> {
       itemCount: 5,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        final colorScheme = Theme.of(context).colorScheme;
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.2),
-            ),
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          child: Column(
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _SkeletonBlock(width: double.infinity, height: 16),
-              const SizedBox(height: 8),
-              const _SkeletonBlock(width: 150, height: 12),
-              const SizedBox(height: 16),
+              _SkeletonBlock(width: double.infinity, height: 16),
+              SizedBox(height: 8),
+              _SkeletonBlock(width: 150, height: 12),
+              SizedBox(height: 16),
               Row(
                 children: [
-                  const _SkeletonBlock(width: 60, height: 18, borderRadius: 4),
-                  const SizedBox(width: 8),
-                  const _SkeletonBlock(width: 80, height: 18, borderRadius: 4),
-                  const Spacer(),
-                  const _SkeletonBlock(width: 100, height: 12),
+                  _SkeletonBlock(width: 60, height: 18, borderRadius: 20),
+                  SizedBox(width: 8),
+                  _SkeletonBlock(width: 80, height: 18, borderRadius: 20),
+                  Spacer(),
+                  _SkeletonBlock(width: 100, height: 12),
                 ],
               ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _ResultCard extends StatelessWidget {
+  final String title;
+  final List<String> authors;
+  final int year;
+  final int citations;
+  final String journal;
+  final VoidCallback onTap;
+
+  const _ResultCard({
+    required this.title,
+    required this.authors,
+    required this.year,
+    required this.citations,
+    required this.journal,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+                height: 1.4,
+              ),
+            ),
+            if (authors.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(
+                authors.take(3).join(', ') +
+                    (authors.length > 3
+                        ? ' +${authors.length - 3}'
+                        : ''),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: colorScheme.onSurface.withOpacity(0.5),
+                  fontSize: 12,
+                  height: 1.4,
+                ),
+              ),
+            ],
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                MetricTag(
+                  text: year.toString(),
+                  color: colorScheme.secondary,
+                ),
+                const SizedBox(width: 6),
+                MetricTag(
+                  text: '$citations cited',
+                  color: colorScheme.primary,
+                ),
+                const Spacer(),
+                Flexible(
+                  child: Text(
+                    journal,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: colorScheme.onSurface.withOpacity(0.4),
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -562,7 +498,7 @@ class _SkeletonBlockState extends State<_SkeletonBlock>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? const Color(0xFF1E2D42) : const Color(0xFFE2E8F0);
+    final baseColor = isDark ? const Color(0xFF2E2720) : const Color(0xFFEDE5DB);
 
     return AnimatedBuilder(
       animation: _animation,
