@@ -200,25 +200,31 @@ class AnalyzerProvider with ChangeNotifier {
       if (maxPagesToFetch > 1) {
         final futures = <Future<OpenAlexResponse>>[];
         for (int page = 2; page <= maxPagesToFetch; page++) {
+          // AI Review: Break early if query changed or cleared
+          if (_currentQuery != query || _currentQuery.isEmpty) break;
           futures.add(_service.searchWorks(query, page: page, perPage: _perPage));
         }
 
-        final responses = await Future.wait(futures);
+        if (futures.isNotEmpty) {
+          final responses = await Future.wait(futures);
 
-        if (_currentQuery == query) {
-          final existingIds = _allWorks.map((w) => w.id).toSet();
-          for (var response in responses) {
-            for (var work in response.works) {
-              if (!existingIds.contains(work.id)) {
-                _allWorks.add(work);
+          if (_currentQuery == query) {
+            final existingIds = _allWorks.map((w) => w.id).toSet();
+            for (var response in responses) {
+              // Double check if query changed mid-execution
+              if (_currentQuery != query || _currentQuery.isEmpty) break;
+              for (var work in response.works) {
+                if (!existingIds.contains(work.id)) {
+                  _allWorks.add(work);
+                }
               }
             }
-          }
 
-          final startIndex = (_currentPage - 1) * _perPage;
-          if (_allWorks.length > startIndex) {
-            final int endIndex = (_currentPage * _perPage).clamp(0, _allWorks.length);
-            _works = _allWorks.sublist(startIndex, endIndex);
+            final startIndex = (_currentPage - 1) * _perPage;
+            if (_allWorks.length > startIndex) {
+              final int endIndex = (_currentPage * _perPage).clamp(0, _allWorks.length);
+              _works = _allWorks.sublist(startIndex, endIndex);
+            }
           }
         }
       }

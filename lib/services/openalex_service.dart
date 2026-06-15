@@ -65,7 +65,12 @@ class OpenAlexService {
             'Failed to load publication data (HTTP ${response.statusCode})');
       }
     } catch (e) {
-      throw Exception('Network error: $e');
+      final errorStr = e.toString();
+      if (errorStr.contains('503') || errorStr.contains('TimeoutException')) {
+        throw Exception(
+            'Máy chủ OpenAlex hiện đang quá tải hoặc bảo trì (Lỗi 503/Timeout). Vui lòng thử lại sau ít phút.');
+      }
+      throw Exception('Lỗi kết nối mạng: $e');
     }
   }
 }

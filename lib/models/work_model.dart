@@ -87,6 +87,11 @@ class Work {
       return 'No abstract available.';
     }
 
+    // AI Review: Limit maxIndex to 5000 to prevent potential Out of Memory crash on malformed data
+    if (maxIndex > 5000) {
+      maxIndex = 5000;
+    }
+
     final List<String> words = List.filled(maxIndex + 1, '');
     invertedIndex.forEach((word, indices) {
       if (indices is List) {
