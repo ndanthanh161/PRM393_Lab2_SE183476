@@ -1,6 +1,6 @@
 {
-    "name": "journal_trend_analyzer",
-    "short_name": "journal_trend_analyzer",
+    "name": "Journal Trend Analyzer",
+    "short_name": "Journal Trend Analyzer",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
