@@ -47,10 +47,7 @@ class DetailScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: const [
-          ThemeToggleButton(),
-          SizedBox(width: 8),
-        ],
+        actions: const [ThemeToggleButton(), SizedBox(width: 8)],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -70,11 +67,20 @@ class DetailScreen extends StatelessWidget {
                   return Chip(
                     label: Text(
                       author,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    backgroundColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
-                    side: BorderSide(color: colorScheme.outline.withOpacity(0.12)),
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                    backgroundColor: colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    side: BorderSide(
+                      color: colorScheme.outline.withValues(alpha: 0.12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 0,
+                    ),
                     visualDensity: VisualDensity.compact,
                   );
                 }).toList(),
@@ -90,14 +96,16 @@ class DetailScreen extends StatelessWidget {
                 color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18),
+                  color: colorScheme.outline.withValues(
+                    alpha: isDark ? 0.35 : 0.18,
+                  ),
                 ),
               ),
               child: Text(
                 work.abstractText,
                 style: TextStyle(
                   fontSize: 15,
-                  color: colorScheme.onSurface.withOpacity(0.85),
+                  color: colorScheme.onSurface.withValues(alpha: 0.85),
                   height: 1.7,
                   fontStyle: work.abstractText.startsWith('No abstract')
                       ? FontStyle.italic
@@ -115,14 +123,20 @@ class DetailScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
-                    color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18),
+                    color: colorScheme.outline.withValues(
+                      alpha: isDark ? 0.35 : 0.18,
+                    ),
                   ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      Icon(Icons.link_rounded, color: colorScheme.primary, size: 24),
+                      Icon(
+                        Icons.link_rounded,
+                        color: colorScheme.primary,
+                        size: 24,
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -156,7 +170,10 @@ class DetailScreen extends StatelessWidget {
                         icon: const Icon(Icons.open_in_new_rounded, size: 14),
                         label: const Text('Open'),
                         style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           visualDensity: VisualDensity.compact,
                         ),
                       ),
@@ -191,23 +208,23 @@ class _HeaderCard extends StatelessWidget {
           colors: isDark
               ? [
                   colorScheme.surface,
-                  colorScheme.surfaceContainerHighest.withOpacity(0.4),
+                  colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
                 ]
               : [
                   colorScheme.surface,
-                  colorScheme.primary.withOpacity(0.05),
+                  colorScheme.primary.withValues(alpha: 0.05),
                 ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colorScheme.primary.withOpacity(isDark ? 0.35 : 0.2),
+          color: colorScheme.primary.withValues(alpha: isDark ? 0.35 : 0.2),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(isDark ? 0.12 : 0.04),
+            color: colorScheme.shadow.withValues(alpha: isDark ? 0.12 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -240,14 +257,14 @@ class _HeaderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Divider(color: colorScheme.outline.withOpacity(0.2)),
+          Divider(color: colorScheme.outline.withValues(alpha: 0.2)),
           const SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
                 Icons.menu_book_outlined,
-                color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 size: 18,
               ),
               const SizedBox(width: 8),

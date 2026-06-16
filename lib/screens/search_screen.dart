@@ -49,9 +49,11 @@ class _SearchScreenState extends State<SearchScreen> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: colorScheme.primary.withOpacity(0.12),
+                color: colorScheme.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: 0.2),
+                ),
               ),
               child: Icon(
                 Icons.science_outlined,
@@ -63,10 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
             const Text('Research Explorer'),
           ],
         ),
-        actions: const [
-          ThemeToggleButton(),
-          SizedBox(width: 8),
-        ],
+        actions: const [ThemeToggleButton(), SizedBox(width: 8)],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +92,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: colorScheme.shadow.withOpacity(isDark ? 0.15 : 0.06),
+                              color: colorScheme.shadow.withValues(
+                                alpha: isDark ? 0.15 : 0.06,
+                              ),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             ),
@@ -102,12 +103,17 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: TextField(
                           controller: _searchController,
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.manage_search_rounded, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.manage_search_rounded,
+                              size: 20,
+                            ),
                             hintText: 'Search topics, methods, or domains...',
                             suffixIcon: _searchController.text.isNotEmpty
                                 ? IconButton(
-                                    icon: const Icon(Icons.close_rounded, size: 18),
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      size: 18,
+                                    ),
                                     onPressed: () {
                                       _searchController.clear();
                                       setState(() {});
@@ -129,7 +135,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: colorScheme.shadow.withOpacity(isDark ? 0.15 : 0.06),
+                            color: colorScheme.shadow.withValues(
+                              alpha: isDark ? 0.15 : 0.06,
+                            ),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -141,10 +149,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           padding: const EdgeInsets.all(12),
                           minimumSize: const Size(48, 48),
                         ),
-                        child: const Icon(
-                          Icons.search_rounded,
-                          size: 20,
-                        ),
+                        child: const Icon(Icons.search_rounded, size: 20),
                       ),
                     ),
                   ],
@@ -156,7 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     itemCount: _suggestions.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
                     itemBuilder: (context, index) {
                       final suggestion = _suggestions[index];
                       final isSelected = provider.currentQuery == suggestion;
@@ -167,34 +172,43 @@ class _SearchScreenState extends State<SearchScreen> {
                           _triggerSearch(suggestion);
                         },
                         avatar: isSelected
-                            ? Icon(Icons.check_circle_rounded,
+                            ? Icon(
+                                Icons.check_circle_rounded,
                                 size: 16,
-                                color: colorScheme.onSecondaryContainer)
-                            : Icon(Icons.search_rounded,
+                                color: colorScheme.onSecondaryContainer,
+                              )
+                            : Icon(
+                                Icons.search_rounded,
                                 size: 16,
-                                color: colorScheme.onSurfaceVariant),
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                         label: Text(suggestion),
                         labelStyle: TextStyle(
                           fontSize: 12,
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           color: isSelected
                               ? colorScheme.onSecondaryContainer
                               : colorScheme.onSurface,
                         ),
                         backgroundColor: isSelected
                             ? colorScheme.secondaryContainer
-                            : colorScheme.surfaceContainerHighest.withOpacity(0.4),
+                            : colorScheme.surfaceContainerHighest.withValues(
+                                alpha: 0.4,
+                              ),
                         side: BorderSide(
                           color: isSelected
                               ? colorScheme.secondary
-                              : colorScheme.outline.withOpacity(0.2),
+                              : colorScheme.outline.withValues(alpha: 0.2),
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
                       );
                     },
                   ),
@@ -225,13 +239,18 @@ class _SearchScreenState extends State<SearchScreen> {
             decoration: BoxDecoration(
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorScheme.error.withOpacity(0.3)),
+              border: Border.all(
+                color: colorScheme.error.withValues(alpha: 0.3),
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline_rounded,
-                    color: colorScheme.error, size: 36),
+                Icon(
+                  Icons.error_outline_rounded,
+                  color: colorScheme.error,
+                  size: 36,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   'Failed to load data',
@@ -277,7 +296,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   width: 96,
                   height: 96,
                   decoration: BoxDecoration(
-                    color: colorScheme.primary.withOpacity(0.08),
+                    color: colorScheme.primary.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -292,7 +311,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  provider.currentQuery.isEmpty ? 'Explore Research' : 'No Results Found',
+                  provider.currentQuery.isEmpty
+                      ? 'Explore Research'
+                      : 'No Results Found',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -306,7 +327,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       : 'We couldn\'t find any matching publications for "${provider.currentQuery}". Try using different terms.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -332,7 +353,7 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             physics: const BouncingScrollPhysics(),
             itemCount: provider.works.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            separatorBuilder: (_, _) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
               final work = provider.works[index];
               return Card(
@@ -341,7 +362,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
-                    color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.2),
+                    color: colorScheme.outline.withValues(
+                      alpha: isDark ? 0.35 : 0.2,
+                    ),
                     width: 1,
                   ),
                 ),
@@ -410,7 +433,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
-                                  color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+                                  color: colorScheme.onSurfaceVariant
+                                      .withValues(alpha: 0.8),
                                   fontSize: 12,
                                 ),
                               ),
@@ -418,7 +442,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             const SizedBox(width: 4),
                             Icon(
                               Icons.chevron_right_rounded,
-                              color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.8,
+                              ),
                               size: 20,
                             ),
                           ],
@@ -437,7 +463,10 @@ class _SearchScreenState extends State<SearchScreen> {
             decoration: BoxDecoration(
               color: colorScheme.surface,
               border: Border(
-                top: BorderSide(color: colorScheme.outline.withOpacity(0.2), width: 1),
+                top: BorderSide(
+                  color: colorScheme.outline.withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
             ),
             child: Row(
@@ -451,12 +480,16 @@ class _SearchScreenState extends State<SearchScreen> {
                       : null,
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
+                    border: Border.all(
+                      color: colorScheme.outline.withValues(alpha: 0.2),
+                    ),
                   ),
                   child: Text(
                     'Page ${provider.currentPage} of ${provider.totalPages}',
@@ -486,7 +519,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: 5,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final colorScheme = Theme.of(context).colorScheme;
@@ -496,7 +529,7 @@ class _SearchScreenState extends State<SearchScreen> {
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.2),
+              color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.2),
             ),
           ),
           child: Column(
@@ -562,7 +595,9 @@ class _SkeletonBlockState extends State<_SkeletonBlock>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? const Color(0xFF1E2D42) : const Color(0xFFE2E8F0);
+    final baseColor = isDark
+        ? const Color(0xFF1E2D42)
+        : const Color(0xFFE2E8F0);
 
     return AnimatedBuilder(
       animation: _animation,

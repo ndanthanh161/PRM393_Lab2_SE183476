@@ -12,10 +12,7 @@ class ThemeToggleButton extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (child, anim) => RotationTransition(
         turns: anim,
-        child: FadeTransition(
-          opacity: anim,
-          child: child,
-        ),
+        child: FadeTransition(opacity: anim, child: child),
       ),
       child: IconButton(
         key: ValueKey<bool>(themeProvider.isDark),

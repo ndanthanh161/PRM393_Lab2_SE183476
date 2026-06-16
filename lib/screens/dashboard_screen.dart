@@ -19,12 +19,11 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Analytics Dashboard'),
-        actions: const [
-          ThemeToggleButton(),
-          SizedBox(width: 8),
-        ],
+        actions: const [ThemeToggleButton(), SizedBox(width: 8)],
       ),
-      body: !hasData ? _buildEmptyState(context) : _buildDashboard(context, provider),
+      body: !hasData
+          ? _buildEmptyState(context)
+          : _buildDashboard(context, provider),
     );
   }
 
@@ -36,7 +35,11 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.dataset_outlined, color: colorScheme.onSurfaceVariant.withOpacity(0.6), size: 48),
+            Icon(
+              Icons.dataset_outlined,
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              size: 48,
+            ),
             const SizedBox(height: 16),
             Text(
               'No Dataset Available',
@@ -50,7 +53,10 @@ class DashboardScreen extends StatelessWidget {
             Text(
               'Search for a topic to generate a research summary.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13),
+              style: TextStyle(
+                color: colorScheme.onSurfaceVariant,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
@@ -172,7 +178,7 @@ class _InfoCard extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.18),
         ),
       ),
       child: Row(
@@ -181,7 +187,7 @@ class _InfoCard extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.08),
+              color: color.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -235,7 +241,7 @@ class _InfluentialPaperCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.18),
         ),
       ),
       child: InkWell(
@@ -263,8 +269,11 @@ class _InfluentialPaperCard extends StatelessWidget {
                     color: colorScheme.error,
                   ),
                   const Spacer(),
-                  Icon(Icons.chevron_right_rounded,
-                      color: colorScheme.onSurfaceVariant, size: 20),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: colorScheme.onSurfaceVariant,
+                    size: 20,
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -313,7 +322,7 @@ class _InfluentialPaperRankedList extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.18),
         ),
       ),
       child: Column(
@@ -346,7 +355,9 @@ class _InfluentialPaperRankedList extends StatelessWidget {
                       style: TextStyle(
                         color: index == 0
                             ? colorScheme.error
-                            : colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            : colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.5,
+                              ),
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
                       ),
@@ -454,12 +465,12 @@ class _StatCard extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outline.withOpacity(isDark ? 0.3 : 0.15),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.15),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(isDark ? 0.08 : 0.03),
+            color: colorScheme.shadow.withValues(alpha: isDark ? 0.08 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -472,7 +483,7 @@ class _StatCard extends StatelessWidget {
             height: 4,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color, color.withOpacity(0.4)],
+                colors: [color, color.withValues(alpha: 0.4)],
               ),
               borderRadius: BorderRadius.circular(2),
             ),
@@ -484,7 +495,7 @@ class _StatCard extends StatelessWidget {
               const Spacer(),
               Icon(
                 Icons.trending_up_rounded,
-                color: color.withOpacity(0.35),
+                color: color.withValues(alpha: 0.35),
                 size: 18,
               ),
             ],

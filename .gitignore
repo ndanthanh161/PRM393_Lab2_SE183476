@@ -109,4 +109,17 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Generated documentation/report artifacts
+docs/**/*.pdf
+docs/**/*.docx
+docs/screenshots/**/*.png
+docs/**/*_hyphen.pdf
+docs/**/*_clear_diagram.pdf
+docs/__pycache__/
+docs/*.py
+
+# Local preview/generated images
+.codex_pdf_preview/
+app_icon_preview.png
+
 

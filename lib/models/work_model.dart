@@ -52,7 +52,8 @@ class Work {
     }
 
     // Safely parse abstract_inverted_index if it exists
-    final abstractIndex = json['abstract_inverted_index'] as Map<String, dynamic>?;
+    final abstractIndex =
+        json['abstract_inverted_index'] as Map<String, dynamic>?;
     final abstractText = _reconstructAbstract(abstractIndex);
 
     return Work(

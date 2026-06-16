@@ -5,8 +5,8 @@ import '../services/openalex_service.dart';
 class AnalyzerProvider with ChangeNotifier {
   final OpenAlexService _service;
 
-  List<Work> _works = [];      // Publications on the current page
-  List<Work> _allWorks = [];   // All loaded publications for trend/stats analysis
+  List<Work> _works = []; // Publications on the current page
+  List<Work> _allWorks = []; // All loaded publications for trend/stats analysis
   bool _isLoading = false;
   bool _isBackgroundLoading = false;
   String? _error;
@@ -16,7 +16,7 @@ class AnalyzerProvider with ChangeNotifier {
   static const int _perPage = 100;
 
   AnalyzerProvider({OpenAlexService? service})
-      : _service = service ?? OpenAlexService();
+    : _service = service ?? OpenAlexService();
 
   List<Work> get works => _works;
   List<Work> get allWorks => _allWorks;
@@ -34,7 +34,10 @@ class AnalyzerProvider with ChangeNotifier {
 
   double get averageCitationCount {
     if (_allWorks.isEmpty) return 0.0;
-    final totalCitations = _allWorks.fold<int>(0, (sum, item) => sum + item.citedByCount);
+    final totalCitations = _allWorks.fold<int>(
+      0,
+      (sum, item) => sum + item.citedByCount,
+    );
     return totalCitations / _allWorks.length;
   }
 
@@ -170,7 +173,11 @@ class AnalyzerProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _service.searchWorks(query, page: 1, perPage: _perPage);
+      final response = await _service.searchWorks(
+        query,
+        page: 1,
+        perPage: _perPage,
+      );
       _works = response.works;
       _allWorks = List.from(response.works);
       _totalCount = response.totalCount;
@@ -184,55 +191,12 @@ class AnalyzerProvider with ChangeNotifier {
       notifyListeners();
     }
 
-    // Start background loading for subsequent pages (up to 20 pages / 2000 items)
-    if (_totalCount > _perPage && _error == null) {
-      _startBackgroundLoading(query);
-    }
-  }
-
-  Future<void> _startBackgroundLoading(String query) async {
-    _isBackgroundLoading = true;
-    notifyListeners();
-
-    try {
-      final int maxPagesToFetch = ((_totalCount / _perPage).ceil()).clamp(1, 20);
-      
-      if (maxPagesToFetch > 1) {
-        final futures = <Future<OpenAlexResponse>>[];
-        for (int page = 2; page <= maxPagesToFetch; page++) {
-          futures.add(_service.searchWorks(query, page: page, perPage: _perPage));
-        }
-
-        final responses = await Future.wait(futures);
-
-        if (_currentQuery == query) {
-          final existingIds = _allWorks.map((w) => w.id).toSet();
-          for (var response in responses) {
-            for (var work in response.works) {
-              if (!existingIds.contains(work.id)) {
-                _allWorks.add(work);
-              }
-            }
-          }
-
-          final startIndex = (_currentPage - 1) * _perPage;
-          if (_allWorks.length > startIndex) {
-            final int endIndex = (_currentPage * _perPage).clamp(0, _allWorks.length);
-            _works = _allWorks.sublist(startIndex, endIndex);
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint('Background loading error: $e');
-    } finally {
-      _isBackgroundLoading = false;
-      notifyListeners();
-    }
+    // Additional pages are loaded only when the user navigates pages.
   }
 
   Future<void> goToPage(int page) async {
     if (page < 1 || page > totalPages) return;
-    
+
     _currentPage = page;
     final int startIndex = (page - 1) * _perPage;
 
@@ -242,7 +206,9 @@ class AnalyzerProvider with ChangeNotifier {
       notifyListeners();
 
       // If we don't have the full page yet, and background loading is not active, load it explicitly.
-      if (_works.length < _perPage && _allWorks.length < _totalCount && !_isBackgroundLoading) {
+      if (_works.length < _perPage &&
+          _allWorks.length < _totalCount &&
+          !_isBackgroundLoading) {
         await _fetchPageExplicitly(page);
       }
     } else {
@@ -256,7 +222,11 @@ class AnalyzerProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _service.searchWorks(_currentQuery, page: page, perPage: _perPage);
+      final response = await _service.searchWorks(
+        _currentQuery,
+        page: page,
+        perPage: _perPage,
+      );
       _works = response.works;
 
       final existingIds = _allWorks.map((w) => w.id).toSet();

@@ -17,10 +17,7 @@ class TrendScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Data Analytics'),
-        actions: const [
-          ThemeToggleButton(),
-          SizedBox(width: 8),
-        ],
+        actions: const [ThemeToggleButton(), SizedBox(width: 8)],
       ),
       body: !hasData
           ? _buildEmptyState(context)
@@ -36,8 +33,11 @@ class TrendScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.insights_rounded,
-                color: colorScheme.onSurfaceVariant.withOpacity(0.6), size: 48),
+            Icon(
+              Icons.insights_rounded,
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              size: 48,
+            ),
             const SizedBox(height: 16),
             Text(
               'No Analytics Available',
@@ -51,7 +51,10 @@ class TrendScreen extends StatelessWidget {
             Text(
               'Search for a topic to view publication trends.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13),
+              style: TextStyle(
+                color: colorScheme.onSurfaceVariant,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
@@ -67,7 +70,6 @@ class TrendScreen extends StatelessWidget {
 
   Widget _buildTrends(BuildContext context, AnalyzerProvider provider) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -80,9 +82,11 @@ class TrendScreen extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                color: colorScheme.secondary.withOpacity(0.08),
+                color: colorScheme.secondary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: colorScheme.secondary.withOpacity(0.2)),
+                border: Border.all(
+                  color: colorScheme.secondary.withValues(alpha: 0.2),
+                ),
               ),
               child: Row(
                 children: [
@@ -91,8 +95,9 @@ class TrendScreen extends StatelessWidget {
                     height: 14,
                     child: CircularProgressIndicator(
                       strokeWidth: 1.5,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(colorScheme.secondary),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        colorScheme.secondary,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -216,7 +221,9 @@ class TrendScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.3 : 0.15)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.15),
+        ),
       ),
       child: LineChart(
         LineChartData(
@@ -226,10 +233,11 @@ class TrendScreen extends StatelessWidget {
           maxY: maxCount * 1.2,
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (touchedSpot) => colorScheme.surfaceContainerHighest,
+              getTooltipColor: (touchedSpot) =>
+                  colorScheme.surfaceContainerHighest,
               tooltipBorderRadius: BorderRadius.circular(8),
               tooltipBorder: BorderSide(
-                color: colorScheme.outline.withOpacity(0.2),
+                color: colorScheme.outline.withValues(alpha: 0.2),
                 width: 1,
               ),
               getTooltipItems: (touchedSpots) {
@@ -251,16 +259,18 @@ class TrendScreen extends StatelessWidget {
             drawVerticalLine: false,
             horizontalInterval: yInterval,
             getDrawingHorizontalLine: (value) => FlLine(
-              color: colorScheme.outline.withOpacity(0.12),
+              color: colorScheme.outline.withValues(alpha: 0.12),
               strokeWidth: 1,
             ),
           ),
           titlesData: FlTitlesData(
             show: true,
-            rightTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -270,7 +280,9 @@ class TrendScreen extends StatelessWidget {
                   return Text(
                     value.toInt().toString(),
                     style: TextStyle(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.6,
+                      ),
                       fontSize: 10,
                     ),
                   );
@@ -290,7 +302,9 @@ class TrendScreen extends StatelessWidget {
                   return Text(
                     year.toString(),
                     style: TextStyle(
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.6,
+                      ),
                       fontSize: 10,
                     ),
                   );
@@ -311,18 +325,18 @@ class TrendScreen extends StatelessWidget {
                 show: spots.length <= 15,
                 getDotPainter: (spot, percent, barData, index) =>
                     FlDotCirclePainter(
-                  radius: 3,
-                  color: colorScheme.surface,
-                  strokeColor: colorScheme.primary,
-                  strokeWidth: 2,
-                ),
+                      radius: 3,
+                      color: colorScheme.surface,
+                      strokeColor: colorScheme.primary,
+                      strokeWidth: 2,
+                    ),
               ),
               belowBarData: BarAreaData(
                 show: true,
                 gradient: LinearGradient(
                   colors: [
-                    colorScheme.primary.withOpacity(0.12),
-                    colorScheme.primary.withOpacity(0.0),
+                    colorScheme.primary.withValues(alpha: 0.12),
+                    colorScheme.primary.withValues(alpha: 0.0),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -350,7 +364,9 @@ class TrendScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18)),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.18),
+          ),
         ),
         child: Text(
           emptyMessage,
@@ -366,7 +382,9 @@ class TrendScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.18),
+        ),
       ),
       child: Column(
         children: entries.asMap().entries.map((indexed) {
@@ -389,7 +407,11 @@ class TrendScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: index == 0 ? barColor : colorScheme.onSurfaceVariant.withOpacity(0.5),
+                          color: index == 0
+                              ? barColor
+                              : colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.5,
+                                ),
                         ),
                       ),
                     ),
@@ -422,7 +444,8 @@ class TrendScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
                     value: progress,
-                    backgroundColor: colorScheme.surfaceContainerHighest.withOpacity(0.4),
+                    backgroundColor: colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.4),
                     valueColor: AlwaysStoppedAnimation<Color>(barColor),
                     minHeight: 6,
                   ),
@@ -448,8 +471,8 @@ class _AnalyticsKpiRow extends StatelessWidget {
     final yearRange = years.isEmpty
         ? 'N/A'
         : years.length == 1
-            ? years.first.toString()
-            : '${years.first}-${years.last}';
+        ? years.first.toString()
+        : '${years.first}-${years.last}';
 
     return Row(
       children: [
@@ -508,7 +531,9 @@ class _AnalyticsKpiCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.18)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.35 : 0.18),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,10 +607,7 @@ class _SectionTitle extends StatelessWidget {
           padding: const EdgeInsets.only(left: 12),
           child: Text(
             subtitle,
-            style: TextStyle(
-              fontSize: 12,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
           ),
         ),
       ],

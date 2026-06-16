@@ -30,8 +30,12 @@ class AppTheme {
   static const Color amberSoft = Color(0x26F59E0B);
 
   // --- Light Mode Colors ---
-  static const Color accentBlue = Color(0xFF2563EB); // Darker blue for readability on light background
-  static const Color accentGreen = Color(0xFF059669); // Darker green for readability
+  static const Color accentBlue = Color(
+    0xFF2563EB,
+  ); // Darker blue for readability on light background
+  static const Color accentGreen = Color(
+    0xFF059669,
+  ); // Darker green for readability
 
   static const Color lightTextPrimary = Color(0xFF0D1B2A);
   static const Color lightTextSecondary = Color(0xFF4A6080);
@@ -146,9 +150,7 @@ class AppTheme {
           letterSpacing: 0,
         ),
         iconTheme: const IconThemeData(color: textPrimary, size: 22),
-        shape: const Border(
-          bottom: BorderSide(color: borderSubdued, width: 1),
-        ),
+        shape: const Border(bottom: BorderSide(color: borderSubdued, width: 1)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -157,8 +159,10 @@ class AppTheme {
         suffixIconColor: textDisabled,
         hintStyle: GoogleFonts.inter(color: textDisabled, fontSize: 14),
         labelStyle: GoogleFonts.inter(color: textSecondary, fontSize: 14),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(color: borderColor),
@@ -182,9 +186,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -197,9 +199,7 @@ class AppTheme {
           foregroundColor: textPrimary,
           side: const BorderSide(color: borderColor),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -222,8 +222,10 @@ class AppTheme {
         backgroundColor: surface,
         selectedItemColor: dashboardBlue,
         unselectedItemColor: textDisabled,
-        selectedLabelStyle:
-            GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 11),
+        selectedLabelStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w700,
+          fontSize: 11,
+        ),
         unselectedLabelStyle: GoogleFonts.inter(fontSize: 11),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -361,8 +363,10 @@ class AppTheme {
         suffixIconColor: lightTextDisabled,
         hintStyle: GoogleFonts.inter(color: lightTextDisabled, fontSize: 14),
         labelStyle: GoogleFonts.inter(color: lightTextSecondary, fontSize: 14),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(color: lightBorderColor),
@@ -386,9 +390,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -401,9 +403,7 @@ class AppTheme {
           foregroundColor: lightTextPrimary,
           side: const BorderSide(color: lightBorderColor),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -426,8 +426,10 @@ class AppTheme {
         backgroundColor: lightSurface,
         selectedItemColor: accentBlue,
         unselectedItemColor: lightTextDisabled,
-        selectedLabelStyle:
-            GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 11),
+        selectedLabelStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w700,
+          fontSize: 11,
+        ),
         unselectedLabelStyle: GoogleFonts.inter(fontSize: 11),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
