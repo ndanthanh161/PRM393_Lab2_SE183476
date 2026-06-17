@@ -14,14 +14,15 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _suggestions = [
-    'Artificial Intelligence',
-    'Software Engineering',
-    'Data Science',
-    'Cybersecurity',
-    'Internet of Things',
-    'Blockchain',
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<AnalyzerProvider>().loadTopicSuggestions();
+    });
+  }
 
   @override
   void dispose() {
@@ -155,70 +156,83 @@ class _SearchScreenState extends State<SearchScreen> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 36,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: _suggestions.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final suggestion = _suggestions[index];
-                      final isSelected = provider.currentQuery == suggestion;
-
-                      return ActionChip(
-                        onPressed: () {
-                          _searchController.text = suggestion;
-                          _triggerSearch(suggestion);
-                        },
-                        avatar: isSelected
-                            ? Icon(
-                                Icons.check_circle_rounded,
-                                size: 16,
-                                color: colorScheme.onSecondaryContainer,
-                              )
-                            : Icon(
-                                Icons.search_rounded,
-                                size: 16,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                        label: Text(suggestion),
-                        labelStyle: TextStyle(
-                          fontSize: 12,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: isSelected
-                              ? colorScheme.onSecondaryContainer
-                              : colorScheme.onSurface,
-                        ),
-                        backgroundColor: isSelected
-                            ? colorScheme.secondaryContainer
-                            : colorScheme.surfaceContainerHighest.withValues(
-                                alpha: 0.4,
-                              ),
-                        side: BorderSide(
-                          color: isSelected
-                              ? colorScheme.secondary
-                              : colorScheme.outline.withValues(alpha: 0.2),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 2,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                SizedBox(height: 36, child: _buildSuggestionChips(provider)),
               ],
             ),
           ),
           Expanded(child: _buildBody(provider)),
         ],
       ),
+    );
+  }
+
+  Widget _buildSuggestionChips(AnalyzerProvider provider) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final suggestions = provider.topicSuggestions;
+
+    if (provider.isLoadingTopicSuggestions && suggestions.isEmpty) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: SizedBox(
+          width: 18,
+          height: 18,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: colorScheme.primary,
+          ),
+        ),
+      );
+    }
+
+    if (suggestions.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      itemCount: suggestions.length,
+      separatorBuilder: (_, _) => const SizedBox(width: 8),
+      itemBuilder: (context, index) {
+        final suggestion = suggestions[index];
+        final isSelected = provider.currentQuery == suggestion;
+
+        return ActionChip(
+          onPressed: () {
+            _searchController.text = suggestion;
+            _triggerSearch(suggestion);
+          },
+          avatar: isSelected
+              ? Icon(
+                  Icons.check_circle_rounded,
+                  size: 16,
+                  color: colorScheme.onSecondaryContainer,
+                )
+              : Icon(
+                  Icons.search_rounded,
+                  size: 16,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+          label: Text(suggestion),
+          labelStyle: TextStyle(
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            color: isSelected
+                ? colorScheme.onSecondaryContainer
+                : colorScheme.onSurface,
+          ),
+          backgroundColor: isSelected
+              ? colorScheme.secondaryContainer
+              : colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+          side: BorderSide(
+            color: isSelected
+                ? colorScheme.secondary
+                : colorScheme.outline.withValues(alpha: 0.2),
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        );
+      },
     );
   }
 

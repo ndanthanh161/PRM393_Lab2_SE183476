@@ -5,12 +5,22 @@ import 'package:journal_trend_analyzer/state/analyzer_provider.dart';
 
 class MockOpenAlexService implements OpenAlexService {
   final List<Work> dummyWorks;
+  final List<String> dummyTopicSuggestions;
 
-  MockOpenAlexService(this.dummyWorks);
+  MockOpenAlexService(this.dummyWorks, {this.dummyTopicSuggestions = const []});
 
   @override
-  Future<OpenAlexResponse> searchWorks(String query, {int page = 1, int perPage = 100}) async {
+  Future<OpenAlexResponse> searchWorks(
+    String query, {
+    int page = 1,
+    int perPage = 100,
+  }) async {
     return OpenAlexResponse(works: dummyWorks, totalCount: dummyWorks.length);
+  }
+
+  @override
+  Future<List<String>> fetchTopicSuggestions({int perPage = 6}) async {
+    return dummyTopicSuggestions.take(perPage).toList();
   }
 }
 
@@ -67,7 +77,7 @@ void main() {
 
       expect(provider.works.length, 3);
       expect(provider.totalPublications, 3);
-      
+
       // (10 + 50 + 30) / 3 = 30.0
       expect(provider.averageCitationCount, 30.0);
 
@@ -102,6 +112,20 @@ void main() {
       // Top authors sorted descending: Author B (3), others (1)
       expect(provider.topAuthors[0].key, 'Author B');
       expect(provider.topAuthors[0].value, 3);
+    });
+
+    test('Loads topic suggestions from OpenAlex service', () async {
+      final mockService = MockOpenAlexService(
+        dummyWorks,
+        dummyTopicSuggestions: ['Medicine', 'Computer Science'],
+      );
+      final provider = AnalyzerProvider(service: mockService);
+
+      await provider.loadTopicSuggestions();
+
+      expect(provider.topicSuggestions, ['Medicine', 'Computer Science']);
+      expect(provider.isLoadingTopicSuggestions, isFalse);
+      expect(provider.topicSuggestionsError, isNull);
     });
   });
 }

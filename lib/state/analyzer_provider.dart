@@ -7,9 +7,12 @@ class AnalyzerProvider with ChangeNotifier {
 
   List<Work> _works = []; // Publications on the current page
   List<Work> _allWorks = []; // All loaded publications for trend/stats analysis
+  List<String> _topicSuggestions = [];
   bool _isLoading = false;
   bool _isBackgroundLoading = false;
+  bool _isLoadingTopicSuggestions = false;
   String? _error;
+  String? _topicSuggestionsError;
   String _currentQuery = '';
   int _currentPage = 1;
   int _totalCount = 0;
@@ -20,9 +23,12 @@ class AnalyzerProvider with ChangeNotifier {
 
   List<Work> get works => _works;
   List<Work> get allWorks => _allWorks;
+  List<String> get topicSuggestions => _topicSuggestions;
   bool get isLoading => _isLoading;
   bool get isBackgroundLoading => _isBackgroundLoading;
+  bool get isLoadingTopicSuggestions => _isLoadingTopicSuggestions;
   String? get error => _error;
+  String? get topicSuggestionsError => _topicSuggestionsError;
   String get currentQuery => _currentQuery;
   int get currentPage => _currentPage;
   int get totalCount => _totalCount;
@@ -160,6 +166,24 @@ class AnalyzerProvider with ChangeNotifier {
   }
 
   // --- Actions ---
+
+  Future<void> loadTopicSuggestions() async {
+    if (_topicSuggestions.isNotEmpty || _isLoadingTopicSuggestions) return;
+
+    _isLoadingTopicSuggestions = true;
+    _topicSuggestionsError = null;
+    notifyListeners();
+
+    try {
+      _topicSuggestions = await _service.fetchTopicSuggestions();
+    } catch (e) {
+      _topicSuggestionsError = e.toString();
+      _topicSuggestions = [];
+    } finally {
+      _isLoadingTopicSuggestions = false;
+      notifyListeners();
+    }
+  }
 
   Future<void> search(String query) async {
     _isLoading = true;

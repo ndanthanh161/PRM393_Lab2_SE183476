@@ -9,28 +9,40 @@ import 'package:journal_trend_analyzer/services/openalex_service.dart';
 
 class MockOpenAlexService implements OpenAlexService {
   final List<Work> dummyWorks;
-  MockOpenAlexService(this.dummyWorks);
+  final List<String> dummyTopicSuggestions;
+  MockOpenAlexService(this.dummyWorks, {this.dummyTopicSuggestions = const []});
 
   @override
-  Future<OpenAlexResponse> searchWorks(String query, {int page = 1, int perPage = 100}) async {
+  Future<OpenAlexResponse> searchWorks(
+    String query, {
+    int page = 1,
+    int perPage = 100,
+  }) async {
     return OpenAlexResponse(works: dummyWorks, totalCount: dummyWorks.length);
+  }
+
+  @override
+  Future<List<String>> fetchTopicSuggestions({int perPage = 6}) async {
+    return dummyTopicSuggestions.take(perPage).toList();
   }
 }
 
 void main() {
-  testWidgets('NavigationShell renders NavigationBar and responds to taps', (WidgetTester tester) async {
+  testWidgets('NavigationShell renders NavigationBar and responds to taps', (
+    WidgetTester tester,
+  ) async {
     final analyzerProvider = AnalyzerProvider(service: MockOpenAlexService([]));
     final themeProvider = ThemeProvider();
 
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<AnalyzerProvider>.value(value: analyzerProvider),
+          ChangeNotifierProvider<AnalyzerProvider>.value(
+            value: analyzerProvider,
+          ),
           ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
         ],
-        child: const MaterialApp(
-          home: NavigationShell(),
-        ),
+        child: const MaterialApp(home: NavigationShell()),
       ),
     );
 
@@ -43,7 +55,9 @@ void main() {
     expect(find.text('Analytics'), findsOneWidget);
 
     // Default tab should be Explore (index 0)
-    final navigationBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
+    final navigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
     expect(navigationBar.selectedIndex, 0);
 
     // Tap on Summary
@@ -51,11 +65,15 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify tab changed
-    final updatedNavigationBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
+    final updatedNavigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
     expect(updatedNavigationBar.selectedIndex, 1);
   });
 
-  testWidgets('NavigationShell shows/hides Badge based on hasResults', (WidgetTester tester) async {
+  testWidgets('NavigationShell shows/hides Badge based on hasResults', (
+    WidgetTester tester,
+  ) async {
     final dummyWorks = [
       Work(
         id: '1',
@@ -67,18 +85,20 @@ void main() {
         abstractText: 'Test Abstract',
       ),
     ];
-    final analyzerProvider = AnalyzerProvider(service: MockOpenAlexService(dummyWorks));
+    final analyzerProvider = AnalyzerProvider(
+      service: MockOpenAlexService(dummyWorks),
+    );
     final themeProvider = ThemeProvider();
 
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<AnalyzerProvider>.value(value: analyzerProvider),
+          ChangeNotifierProvider<AnalyzerProvider>.value(
+            value: analyzerProvider,
+          ),
           ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
         ],
-        child: const MaterialApp(
-          home: NavigationShell(),
-        ),
+        child: const MaterialApp(home: NavigationShell()),
       ),
     );
 

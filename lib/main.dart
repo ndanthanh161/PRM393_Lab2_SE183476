@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'services/openalex_service.dart';
 import 'state/analyzer_provider.dart';
 import 'state/theme_provider.dart';
 import 'screens/navigation_shell.dart';
@@ -10,13 +11,17 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final OpenAlexService? openAlexService;
+
+  const MyApp({super.key, this.openAlexService});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AnalyzerProvider()),
+        ChangeNotifierProvider(
+          create: (_) => AnalyzerProvider(service: openAlexService),
+        ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: Consumer<ThemeProvider>(

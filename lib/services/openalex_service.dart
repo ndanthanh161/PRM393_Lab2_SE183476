@@ -13,7 +13,8 @@ class OpenAlexResponse {
 
 class OpenAlexService {
   static const String _baseUrl = 'api.openalex.org';
-  static const String _path = '/works';
+  static const String _worksPath = '/works';
+  static const String _topicsPath = '/topics';
   static const Duration _requestTimeout = Duration(seconds: 30);
 
   // A polite mailto email as recommended by OpenAlex API guidelines
@@ -21,6 +22,7 @@ class OpenAlexService {
 
   final http.Client _client;
   final Map<String, OpenAlexResponse> _cache = {};
+  List<String>? _topicSuggestionsCache;
 
   OpenAlexService({http.Client? client}) : _client = client ?? http.Client();
 
@@ -48,7 +50,7 @@ class OpenAlexService {
           'id,title,publication_year,cited_by_count,doi,primary_location,authorships,abstract_inverted_index',
     };
 
-    final uri = Uri.https(_baseUrl, _path, queryParameters);
+    final uri = Uri.https(_baseUrl, _worksPath, queryParameters);
 
     try {
       final response = await _getWithRetry(uri);
@@ -80,6 +82,46 @@ class OpenAlexService {
     } catch (e) {
       debugPrint('OpenAlex network error for "$cleanQuery": $e');
       return _fallbackResponse(cleanQuery, page: page, perPage: perPage);
+    }
+  }
+
+  /// Loads topic suggestions from OpenAlex instead of using local defaults.
+  Future<List<String>> fetchTopicSuggestions({int perPage = 6}) async {
+    if (_topicSuggestionsCache != null) return _topicSuggestionsCache!;
+
+    final queryParameters = {
+      'per_page': perPage.toString(),
+      'sort': 'works_count:desc',
+      'mailto': _mailto,
+      'select': 'display_name',
+    };
+
+    final uri = Uri.https(_baseUrl, _topicsPath, queryParameters);
+
+    try {
+      final response = await _getWithRetry(uri);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List? ?? [];
+        final suggestions = results
+            .map((topicJson) {
+              final topic = topicJson as Map<String, dynamic>;
+              return topic['display_name'] as String? ?? '';
+            })
+            .where((name) => name.trim().isNotEmpty)
+            .toList(growable: false);
+
+        _topicSuggestionsCache = suggestions;
+        return suggestions;
+      } else {
+        throw Exception(
+          'Failed to load OpenAlex topics (HTTP ${response.statusCode})',
+        );
+      }
+    } catch (e) {
+      debugPrint('OpenAlex topic suggestions error: $e');
+      return const [];
     }
   }
 
